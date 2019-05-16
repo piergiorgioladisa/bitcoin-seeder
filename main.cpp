@@ -391,13 +391,30 @@ extern "C" void* ThreadStats(void*) {
       requests += dnsThread[i]->dns_opt.nRequests;
       queries += dnsThread[i]->dbQueries;
     }
+    FILE *d = fopen("network_client_info.csv", "a");
+ 
     printf("%s %i/%i available (%i tried in %is, %i new, %i active), %i banned; %llu DNS requests, %llu db queries", c, stats.nGood, stats.nAvail, stats.nTracked, stats.nAge, stats.nNew, stats.nAvail - stats.nTracked - stats.nNew, stats.nBanned, (unsigned long long)requests, (unsigned long long)queries);
+    # Print the network statistic seen by the crawler into
+    # a .csv file
+    fprintf(d, "%s; %i/%i available; %i tried in %is; %i new; %i active; %i banned; %llu DNS requests; %llu db queries\n", c, stats.nGood, stats.nAvail, stats.nTracked, stats.nAge, stats.nNew, stats.nAvail - stats.nTracked - stats.nNew, stats.nBanned, (unsigned long long)requests, (unsigned long long)queries);
+    fclose(d);
     Sleep(1000);
   } while(1);
   return nullptr;
 }
 
-static const string mainnet_seeds[] = {"dnsseed.bluematt.me", "bitseed.xf2.org", "dnsseed.bitcoin.dashjr.org", "seed.bitcoin.sipa.be", ""};
+# List of mainnet_seeds updated to the list
+# present in the bitcoin core client up to
+# 05/2019
+static const string mainnet_seeds[] = {"seed.bitcoin.sipa.be",
+             "dnsseed.bluematt.me",
+             "dnsseed.bitcoin.dashjr.org",
+             "seed.bitcoinstats.com",
+             "seed.bitcoin.jonasschnelli.ch",
+             "seed.btc.petertodd.org",
+             "seed.bitcoin.sprovoost.nl",
+             "dnsseed.emzy.de",
+	     ""};
 static const string testnet_seeds[] = {"testnet-seed.alexykot.me",
                                        "testnet-seed.bitcoin.petertodd.org",
                                        "testnet-seed.bluematt.me",
